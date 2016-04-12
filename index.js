@@ -1,7 +1,7 @@
 /**
  * Created by 姜昊 on 2016/4/12.
  */
-var PORT = "8080";
+var PORT = "9527";
 var http = require('http');
 var qs = require('qs');
 var TOKEN = 'sspku';
@@ -14,7 +14,7 @@ function checkSignatur(params,token){
 }
 
 var server = http.createServer(function(req,res){
-   var query = require('url').parse(request.url).query;
+   var query = require('url').parse(req.url).query;
     var params = qs.parse(query);
 
     if(!checkSignatur(params,TOKEN)){
@@ -35,4 +35,4 @@ var server = http.createServer(function(req,res){
     }
 });
 server.listen(PORT);
-console.log("app is running at port ");
+console.log("app is running at port 9527");
