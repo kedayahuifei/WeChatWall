@@ -38,7 +38,7 @@ var server = http.createServer(function(req,res){
                     if(result.xml.MsgType[0]==='text'){
                         getUserInfo(result.xml.FromUserName[0])
                             .then(function(userInfo){
-                                result.user = userInfo;
+                                result.User = userInfo;
                                 wss.broadcast(result);
                                 var resMsg =replyText(result,'copy that');
                                 res.end(resMsg);

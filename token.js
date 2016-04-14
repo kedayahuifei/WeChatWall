@@ -7,7 +7,7 @@ var fs = require('fs');
 function getToken(appID,appSecret){
     return new Promise(function(resolve,reject){
         var token;
-        if(fs.exitsSync('token.dat')){
+        if(fs.existsSync('token.dat')){
             token = JSON.parse(fs.readFileSync('token.dat'));
         }
 
@@ -17,7 +17,7 @@ function getToken(appID,appSecret){
                 var result = JSON.parse(data);
                 result.timeout = Date.now() + 7000000;
                 fs.writeFileSync('token.dat',JSON.stringify(result));
-                resolve(token);
+                resolve(result);
             });
         }else{
             resolve(token);
