@@ -4,13 +4,13 @@
 /**
  * Created by 姜昊 on 2016/4/12.
  */
-var PORT = "9527";
+var PORT = "2828";
 var http = require('http');
 var qs = require('qs');
-var TOKEN = 'sspku';
+var TOKEN = 'lemon';
 
 function checkSignatur(params,token){
-    var key =[token,params.timestamp,params.noncel].sort().join('');
+    var key =[token,params.timestamp,params.nonce].sort().join('');
     var sha1 = require('crypto').createHash('sha1');
     sha1.update(key);
     return sha1.digest('hex') == params.signature;
@@ -27,4 +27,4 @@ var server = http.createServer(function(req,res){
     }
 });
 server.listen(PORT);
-console.log("app is running at port 9527");
+console.log("app is running at port 2828");
