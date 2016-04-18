@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>wall</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <style>
+        .titlelogo{
+            width:200px;
+            height:200px;
+        }
+        .myImg{
+            width:200px;
+        }
+        .headlogo{
+            width:100px;
+            height:100px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <img src="../public/data/logo.jpg"
+                 class = "img-circle titlelogo">
+        </div>
+        <div class="col-sm-6">
+            <h3>疯狂互动墙</h3>
+            <p >扫描右侧二维码参与互动</p>
+        </div>
+        <div class="col-sm-2">
+            <img src="../public/data/erweima.jpg"
+                 class = "titlelogo">
+        </div>
+    </div>
+</div>
+
+<div id="msgList" data-spy="scroll" data-target="#navbar-example" data-offset="0"
+     style="height:500px;overflow:auto; position: relative;">
+
+</div>
+
+<script type="text/javascript">
+    var msglist = document.getElementById('msgList');
+    function createItem(msg){
+        var div1 =document.createElement('div');
+        div1.className="container"
+        var div2 =document.createElement('div');
+        div2.className="col"
+        var div3 =document.createElement('div');
+        div3.className="col-sm-2"
+        var div4 =document.createElement('div');
+        div4.className="col-sm-10"
+        var head =document.createElement('img');
+        head.className ="headlogo";
+        head.src=msg.User.headimgurl;
+        var name =document.createElement('h4');
+        name.innerHTML=msg.User.nickname;
+        if(msg.xml.MsgType[0]==='text'){
+            var content =document.createElement('h2');
+            content.innerHTML=msg.xml.Content[0];
+            div4.appendChild(content);
+        }
+        if(msg.xml.MsgType[0]==='image'){
+            var img =document.createElement('img');
+            img.src=msg.xml.PicUrl[0];
+            img.className ="myImg";
+            div4.appendChild(img);
+        }
+        div3.appendChild(head);
+        div3.appendChild(name);
+        div2.appendChild(div3);
+        div2.appendChild(div4);
+        div1.appendChild(div2);
+        return div1;
+
+    }
+    var ws = new WebSocket('ws://42.96.159.81:10001/');
+    ws.onmessage = function(evt)
+    {
+        console.log(evt.data)
+        var msg = JSON.parse(evt.data);
+        var oLi = createItem(msg);
+        msglist.appendChild(oLi);
+    };
+</script>
+</body>
+</html>

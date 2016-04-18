@@ -5,7 +5,8 @@ var PORT = "2828";
 var http = require('http');
 var qs = require('qs');
 var TOKEN = 'lemon';
-
+var messagePool=[];
+var reply = require('./reply.js').reply;
 var wss = require('./websocket.js').wss;
 var getUserInfo = require('./user.js').getUserInfo;
 
@@ -35,42 +36,22 @@ var server = http.createServer(function(req,res){
             var parseString = require('xml2js').parseString;
             parseString(postdata,function(err,result){
                 if(!err){
-                    if(result.xml.MsgType[0]==='text'){
-                        getUserInfo(result.xml.FromUserName[0])
+                    getUserInfo(result.xml.FromUserName[0])
                             .then(function(userInfo){
                                 result.User = userInfo;
+                                var resMsg= reply(result);
                                 wss.broadcast(result);
-                                var resMsg =replyText(result,'copy that');
                                 res.end(resMsg);
                             });
-                    }
                 }
             });
         });
     }
 });
+
+
+var wallStart =require('./wallServer.js').startWall;
+wallStart();
 server.listen(PORT);
 console.log("app is running at port 2828");
 
-function replyText(msg,replyText){
-    if(msg.xml.MsgType[0] !== 'text'){
-        return '';
-    }
-    console.log(msg);
-    var tmpl =require('tmpl');
-    var replyTmpl = '<xml>' +
-        '<ToUserName><![CDATA[{toUser}]]></ToUserName>' +
-        '<FromUserName><![CDATA[{fromUser}]]></FromUserName>' +
-        '<CreateTime><![CDATA[{time}]]></CreateTime>' +
-        '<MsgType><![CDATA[{type}]]></MsgType>' +
-        '<Content><![CDATA[{content}]]></Content>' +
-        '</xml>';
-    return tmpl(replyTmpl,{
-        toUser: msg.xml.FromUserName[0],
-        fromUser: msg.xml.ToUserName[0],
-        type: 'text',
-        time: Date.now(),
-        content: replyText
-    });
-
-}
